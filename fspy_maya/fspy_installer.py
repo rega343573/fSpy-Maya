@@ -623,7 +623,11 @@ class ModuleManager(QThread):
         """
         maya_version = str(self.maya_version)
         
-        python_path =  'PYTHONPATH+:={0}'.format(self.site_packages_path.split(self.module_path)[1])
+        # Normalize paths to handle mixed path separators (e.g., on Windows with Maya 2025)
+        # Replace backslashes with forward slashes for consistent string matching
+        normalized_site_packages = self.site_packages_path.replace('\\', '/')
+        normalized_module_path = self.module_path.replace('\\', '/')
+        python_path =  'PYTHONPATH+:={0}'.format(normalized_site_packages.split(normalized_module_path)[1])
         relative_path = '.\{0}'.format(self.relative_module_path)        
         platform_name =  self.get_platform_string(self.get_platform())
         
